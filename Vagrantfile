@@ -74,9 +74,9 @@ Vagrant.configure("2") do |config|
 
   ## Port forwarding
   # http for testing apps running locally on Guest VM.
-  config.vm.network "forwarded_port", guest: 8080, host: HOST_HTTP_PORTFORWARD_PORT.to_int
+  config.vm.network "forwarded_port", guest: 8080, host: HOST_HTTP_PORTFORWARD_PORT.to_i
   # Forwarded ports for localstack
-  for i in HOST_LOCALSTACK_PORTFORWARD_PORT.to_int...HOST_LOCALSTACK_PORTFORWARD_PORT.to_int + 17
+  for i in HOST_LOCALSTACK_PORTFORWARD_PORT.to_i...HOST_LOCALSTACK_PORTFORWARD_PORT.to_i + 17
     config.vm.network :forwarded_port, guest: i, host: i
   end
 
