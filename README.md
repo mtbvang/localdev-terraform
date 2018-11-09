@@ -7,7 +7,7 @@ versions of all tools installed.
 It uses vagrant, virtualbox and make/gradle. 
 
 
-# Requirements
+### Requirements
 
 The following needs to be installed on Windows host
 
@@ -20,7 +20,7 @@ The following needs to be installed on Windows host
 - Enable Symlinks on Windows 10 (Refer to trouble shooting section)
 
 
-# Usage
+## Usage
 
 Clone this repo and from the root folder with the Vagrantfile file run the following bring up the VM:
 ```
@@ -33,7 +33,7 @@ endings see the trouble shooting section about end of line characters below.)
 cd /vagrant
 ```
 
-## Passing in parameters to vagrant
+### Passing in parameters to vagrant
 
 Parameters can be passed into vagrant using environment variables. The example below passes in an ansible tag to 
 restrict ansible to running only tasks tagged with 'docker' (ANSIBLE_TAGS=docker). It also tells vagrant to only run 
@@ -44,7 +44,7 @@ https://www.vagrantup.com/intro/index.html.
 ANSIBLE_TAGS=docker vagrant provision --provision-with ansible
 ```
 
-## Cloud Nuke
+### Cloud Nuke
 
 Cloud nuke (https://github.com/gruntwork-io/cloud-nuke) requires setting the aws profile environment variable in the VM 
 to select the profile with the credentials to use.
@@ -52,14 +52,14 @@ to select the profile with the credentials to use.
 export AWS_PROFILE=<PROFILE NAME>
 ```
 
-## Gradle tasks
+### Gradle tasks
 
 The build-vagrant.gradle file contains gradle convenience tasks for vagrant that can be run. For example:
 ```
 ./gradlew vagrantreloadmax
 ```
 
-# Testing
+## Testing
 
 The Vagrantfile and ansible playbook can be tested by cloning this repository and running vagrant up. ansible/tests.yml 
 contains a playbook with tests that validate the tools installed by the ansible/playbook.yml.
@@ -74,7 +74,7 @@ After making changes to the vagrant file or ansible code run an end to end test 
 vagrant provision
 ```
 
-## Testing ansible playbooks
+### Testing ansible playbooks
 
 The ansible playbook ansible/playbook.yml and test playbook ansible/tests.yml can be run with: 
 
@@ -92,9 +92,9 @@ ANSIBLE_TAGS=testsshconfig vagrant provision --provision-with ansible_tests
 Note: The tests are run as a seperate ansible_local vagrant provisioner to allow tasks that require a new shell session 
 to take effect.
 
-# Trouble shooting
+## Trouble shooting
 
-## Windows Virtualbox error
+### Windows Virtualbox error
 The following registry entries need to be run from an admin console to get around the error message:
 
 ```
@@ -122,7 +122,7 @@ cd localdev
 gradlew.bat deleteRegistriesForVirtualBox
 ```
 
-## End of line characters
+### End of line characters
 
 Because you're working between linux and windows ensure that you use the LF end of line character with git by having the 
 following in your ~/.gitconfig file.
@@ -134,13 +134,22 @@ following in your ~/.gitconfig file.
 
 To convert windows line endings to linux see: https://askubuntu.com/questions/803162/how-to-change-windows-line-ending-to-unix-version
 
-## Enable Symlinks on Windows
+### Enable Symlinks on Windows
 
 Symlinks creation is disabled by default in windows. You'll need to enable this to do terraform init in the guest 
 virtual machine. Instructions available at https://community.perforce.com/s/article/3472
 
+#### Vagrant cannot forward the spcified ports on this VM...
 
-## Switching from virtualbox to vmware
+If vagrant up gives a long message starting with 'Vagrant cannot forward the specified ports on this VM...' specify a
+ different port range by adding the following two environment variables with ports that are free on your computer. 
+ Refer to the Vagrantfile for what those port forwards are for.
+
+```
+HOST_HTTP_PORTFORWARD_PORT=8091 HOST_LOCALSTACK_PORTFORWARD_PORT=4667 vagrant up
+```
+
+### Switching from virtualbox to vmware
 
 Make sure you vagrant destroy the virtualbox VM first to remove the vboxnet interface otherwise vmware will not be able 
 to recreate the new one.
