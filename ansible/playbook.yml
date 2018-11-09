@@ -3,8 +3,8 @@
   become: yes
   become_user: root
   become_method: sudo
-  hosts: 
-    - all
+  hosts:
+  - all
   vars:
     username: 'Value obtained from host OS and passed in by Vagrantfile in ansible provisioner.'
     _terraform_version: '0.11.6'
@@ -19,110 +19,110 @@
     _vagrant_version: '2.2.0'
     _goss_version: 'v0.3.6'
   pre_tasks:
-    - name: Gathering facts
-      setup:
+  - name: Gathering facts
+    setup:
   roles:
-    - role: terraform
-      version: '{{ _terraform_version }}'
-      tags: terraform
-    - role: awscli
-      awscli_version: '{{ _awscli_version }}'
-      awscli_users:
-        - username: vagrant
-          output: text
-      tags: awscli
-    - role: golang
-      golang_version: '{{ _golang_version }}'
-      golang_gopath: '/home/vagrant/go'
-      golang_install_dir: '{{ _golang_install_dir }}'
-      tags: golang
-    - role: java
-      java_packages:
-        - 'openjdk-{{ _java_version }}-jdk'
-      tags: java
-    - role: docker
-      docker_version: '{{ _docker_version }}'
-      docker_users: vagrant
-      tags: docker
-    - role: packer
-      packer_version: '{{ _packer_version }}'
-      tags: packer
-    - role: vagrant
-      vagrant_version: '{{ _vagrant_version }}'
-      vagrant_virtualbox_install: false
-      tags: vagrant
+  - role: terraform
+    version: '{{ _terraform_version }}'
+    tags: terraform
+  - role: awscli
+    awscli_version: '{{ _awscli_version }}'
+    awscli_users:
+    - username: vagrant
+      output: text
+    tags: awscli
+  - role: golang
+    golang_version: '{{ _golang_version }}'
+    golang_gopath: '/home/vagrant/go'
+    golang_install_dir: '{{ _golang_install_dir }}'
+    tags: golang
+  - role: java
+    java_packages:
+    - 'openjdk-{{ _java_version }}-jdk'
+    tags: java
+  - role: docker
+    docker_version: '{{ _docker_version }}'
+    docker_users: vagrant
+    tags: docker
+  - role: packer
+    packer_version: '{{ _packer_version }}'
+    tags: packer
+  - role: vagrant
+    vagrant_version: '{{ _vagrant_version }}'
+    vagrant_virtualbox_install: false
+    tags: vagrant
   tasks:
-    - name: Install required packages
-      apt: name={{ item }} state=installed
-      with_items:
-        - resolvconf
-        - linuxbrew-wrapper
-      tags: packages
-    - name: Add DNS to resolvconf. Required by docker containers to resolve DNS.
-      lineinfile:
-        path: /etc/resolvconf/resolv.conf.d/head
-        insertafter: 'EOF'
-        line: 'nameserver 10.192.100.14'
-      tags: dns
-    - name: Set ssh config file
-      template:
-        src: ssh/config.j2
-        dest: /home/vagrant/.ssh/config
-        owner: vagrant
-        group: vagrant
-        mode: 0544
-      tags: ssh
-    - name: Add aliases
-      copy:
-        src:  files/bash_aliases
-        dest: ~/.bash_aliases
-      become: true
-      become_user: vagrant
-      mode: 0644
-      tags: aliases
-    - name: Install golang dep
-      shell: '{{_golang_install_dir}}/bin/go get -u github.com/golang/dep/cmd/dep'
-      args:
-        chdir: "{{_golang_install_dir}}/bin/"
-        creates: dep
-      become: true
-      become_user: vagrant
-      tags: golang,golangdep
-    - name: Install cloud nuke tool
-      shell: >
-        wget https://github.com/gruntwork-io/cloud-nuke/releases/download/v{{_cloudnuke_version}}/cloud-nuke_linux_amd64
-        && mv cloud-nuke_linux_amd64 /usr/local/bin/cloud-nuke
-        && chmod u+x /usr/local/bin/cloud-nuke
-      become: true
-      become_user: root
-      tags: cloudnuke
-    - name: Add ssh to bastion command to .bashrc
-      lineinfile:
-        path: /home/vagrant/.bashrc
-        insertafter: 'EOF'
-        line: 'ssh bastion -Nf'
-      tags: bashrc
-    - name: Install terragrunt. Brew only has HEAD version.
-      shell: >
-        brew install terragrunt || true
-      become: true
-      become_user: vagrant
-      tags: terragrunt
-    - name: Create symbolic link for Terragrunt installed by brew
-      file:
-        src: "/home/linuxbrew/.linuxbrew/Cellar/terragrunt/{{ _terragrunt_version }}/bin/terragrunt"
-        dest: "/usr/local/bin/terragrunt"
-        state: link
-      tags: terragrunt
-    - name: Install goss testing framework.
-      get_url:
-        url:  'https://github.com/aelsabbahy/goss/releases/download/{{ _goss_version }}/goss-linux-amd64'
-        dest: /usr/local/bin/goss
-        mode: 0755
-      become: true
-      become_user: root
-      tags: goss
+  - name: Install required packages
+    apt: name={{ item }} state=installed
+    with_items:
+    - resolvconf
+    - linuxbrew-wrapper
+    tags: packages
+  - name: Add DNS to resolvconf. Required by docker containers to resolve DNS.
+    lineinfile:
+      path: /etc/resolvconf/resolv.conf.d/head
+      insertafter: 'EOF'
+      line: 'nameserver 10.192.100.14'
+    tags: dns
+  - name: Set ssh config file
+    template:
+      src: ssh/config.j2
+      dest: /home/vagrant/.ssh/config
+      owner: vagrant
+      group: vagrant
+      mode: 0544
+    tags: ssh
+  - name: Add aliases
+    copy:
+      src:  files/bash_aliases
+      dest: ~/.bash_aliases
+    become: true
+    become_user: vagrant
+    mode: 0644
+    tags: aliases
+  - name: Install golang dep
+    shell: '{{_golang_install_dir}}/bin/go get -u github.com/golang/dep/cmd/dep'
+    args:
+      chdir: "{{_golang_install_dir}}/bin/"
+      creates: dep
+    become: true
+    become_user: vagrant
+    tags: golang,golangdep
+  - name: Install cloud nuke tool
+    shell: >
+      wget https://github.com/gruntwork-io/cloud-nuke/releases/download/v{{_cloudnuke_version}}/cloud-nuke_linux_amd64
+      && mv cloud-nuke_linux_amd64 /usr/local/bin/cloud-nuke
+      && chmod u+x /usr/local/bin/cloud-nuke
+    become: true
+    become_user: root
+    tags: cloudnuke
+  - name: Add ssh to bastion command to .bashrc
+    lineinfile:
+      path: /home/vagrant/.bashrc
+      insertafter: 'EOF'
+      line: 'ssh bastion -Nf -oStrictHostKeyChecking=no'
+    tags: bashrc,sshconfig
+  #    - name: Install terragrunt. Brew only has HEAD version.
+  #      shell: >
+  #        brew install terragrunt || true
+  #      become: true
+  #      become_user: vagrant
+  #      tags: terragrunt
+  #    - name: Create symbolic link for Terragrunt installed by brew
+  #      file:
+  #        src: "/home/linuxbrew/.linuxbrew/Cellar/terragrunt/{{ _terragrunt_version }}/bin/terragrunt"
+  #        dest: "/usr/local/bin/terragrunt"
+  #        state: link
+  #      tags: terragrunt
+  - name: Install goss testing framework.
+    get_url:
+      url:  'https://github.com/aelsabbahy/goss/releases/download/{{ _goss_version }}/goss-linux-amd64'
+      dest: /usr/local/bin/goss
+      mode: 0755
+    become: true
+    become_user: root
+    tags: goss
 
-    - debug:
-        var: username
-        verbosity: 2
+  - debug:
+      var: username
+      verbosity: 2

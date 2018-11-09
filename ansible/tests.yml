@@ -73,14 +73,14 @@
       ignore_errors: ignore_errors
       tags: test,docker,testdocker
 
-    - name: Test ssh config
-      shell: >
-        ssh -tt bastion
-      register: output
-      failed_when:
-      - '"Permission denied" not in output.stderr'
-      ignore_errors: ignore_errors
-      tags: test,sshconfig,testsshconfig
+#    - name: Test ssh config
+#      shell: >
+#        ssh -tt bastion
+#      register: output
+#      failed_when:
+#      - '"Permission denied" not in output.stderr'
+#      ignore_errors: ignore_errors
+#      tags: test,sshconfig,testsshconfig
 
     - name: Test Gradle wrapper gw alias
       lineinfile:
@@ -142,14 +142,14 @@
       ignore_errors: ignore_errors
       tags: test,cloudnuke,cloudnuketest
 
-    - name: Test terragrunt
-      shell: >
-        terragrunt -v
-      register: output
-      failed_when:
-      - '"v0.17.1" not in output.stdout'
-      ignore_errors: ignore_errors
-      tags: test,terragrunt,terragrunttest
+#    - name: Test terragrunt
+#      shell: >
+#        terragrunt -v
+#      register: output
+#      failed_when:
+#      - '"v0.17.1" not in output.stdout'
+#      ignore_errors: ignore_errors
+#      tags: test,terragrunt,terragrunttest
 
     - name: Test terragrunt alias
       lineinfile:
