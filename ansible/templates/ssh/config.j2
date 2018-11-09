@@ -1,0 +1,9 @@
+IdentityFile "/home/vagrant/.ssh/id_rsa"
+User {{ username }}
+
+Host bastion foo.bar.com
+    HostName foo.bar.com
+    ForwardAgent Yes
+    ServerAliveInterval 60
+
+

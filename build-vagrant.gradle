@@ -1,0 +1,44 @@
+task vagrantUp(type: Exec) {
+    group "vagrant"
+    description "Bring up the virtual machine with default settings"
+    commandLine 'bash', '-c', "vagrant up"
+    ignoreExitValue true
+}
+
+task vagrantReload(type: Exec) {
+    group "vagrant"
+    description "Vagrant reload the virtual machine with default settings"
+    commandLine 'bash', '-c', "vagrant reload"
+    ignoreExitValue true
+}
+
+task vagrantUpMax(type: Exec) {
+    group "vagrant"
+    description "Bring up the virtual machine with max cpu and ram settings by setting the VM_CPU and VM_MEMORY" +
+            " environment variables."
+    commandLine 'bash', '-c', "VM_CPUS=2 VM_MEMORY=4096 vagrant up"
+    ignoreExitValue true
+}
+
+task vagrantReloadMax(type: Exec) {
+    group "vagrant"
+    description "Vagrant reload the virtual machine with max cpu and ram settings by setting the VM_CPU and VM_MEMORY" +
+            " environment variables."
+    commandLine 'bash', '-c', "VM_CPUS=2 VM_MEMORY=4096 vagrant reload"
+    ignoreExitValue true
+}
+
+task vagrantRecreate(type: Exec) {
+    group "vagrant"
+    description "Recreate the virtual machine using vagrant destroy and vagrant up with default cpu and ram settings "
+    commandLine 'bash', '-c', "vagrant destroy -f && vagrant up"
+    ignoreExitValue true
+}
+
+task vagrantRecreateMax(type: Exec) {
+    group "vagrant"
+    description "Recreate the virtual machine using vagrant destroy and vagrant up with max cpu and ram settings by " +
+            "setting the VM_CPU and VM_MEMORY environment variables."
+    commandLine 'bash', '-c', "VM_CPUS=2 VM_MEMORY=4096 vagrant destroy -f && vagrant up"
+    ignoreExitValue true
+}

@@ -1,0 +1,65 @@
+buildscript {
+	repositories {
+		mavenLocal()
+	}
+}
+
+plugins {
+	id "com.dorongold.task-tree" version "1.3.1"
+	id "net.rdrei.android.buildtimetracker" version "0.11.0"
+}
+
+apply plugin: "com.dorongold.task-tree"
+apply plugin: "net.rdrei.android.buildtimetracker"
+
+buildtimetracker {
+	reporters {
+		summary {
+			ordered false
+			threshold 1
+			barstyle 'unicode'
+		}
+	}
+}
+
+apply from: 'build-vagrant.gradle'
+
+task motoStart {
+	group "moto"
+	description "*Run from VM commandline. Start moto docker container on localdev VM. Refer to https://github.com/gruntwork-io/terratest/tree/master/test-docker-images/moto"
+	doLast {
+		exec {
+			commandLine 'bash', '-c', "docker run -d -p 5000:5000 gruntwork/moto moto_server ec2 --host 0.0.0.0"
+			ignoreExitValue true
+		}
+	}
+}
+
+task deleteRegistriesForVirtualBox {
+	group "virtualbox"
+	description "*Run from a windows admin command line. Delete the registries that prevent virtualbox from starting."
+	doLast {
+        //Couldn't get multiple commands to run in one exec with ^ and &.
+		exec {
+			commandLine 'cmd', '/c', '''REG DELETE "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /f'''
+			ignoreExitValue true
+		}
+		exec {
+			commandLine 'cmd', '/c', '''REG DELETE "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard" /v "RequirePlatformSecurityFeatures" /f'''
+			ignoreExitValue true
+		}
+		exec {
+			commandLine 'cmd', '/c', '''REG DELETE "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard" /v "Locked" /f'''
+			ignoreExitValue true
+		}
+		exec {
+			commandLine 'cmd', '/c', '''REG DELETE "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity" /f'''
+			ignoreExitValue true
+		}
+		exec {
+			commandLine 'cmd', '/c', '''REG DELETE "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa" /v "LsaCfgFlags" /f'''
+			ignoreExitValue true
+		}
+	}
+}
+

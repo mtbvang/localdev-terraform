@@ -1,0 +1,181 @@
+---
+# TODO replace with https://github.com/indusbox/goss-ansible and write tests in goss.
+- name: Run tests
+  hosts:
+    - all
+  become: yes
+  become_user: vagrant
+  vars:
+    ignore_errors: no
+  tasks:
+    - name: Test terraform
+      shell: >
+        terraform version
+      register: output
+      failed_when:
+      - '"v0.11.6" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,terraform,terraformtest
+
+    - name: Test terraform alias
+      lineinfile:
+        path: /home/vagrant/.bash_aliases
+        line: "alias tf='terraform'"
+        state: present
+      check_mode: no
+      register: output
+      failed_when: (output | changed) or (output | failed)
+      ignore_errors: ignore_errors
+      tags: test,terraform,terraformtest
+
+    - name: Test aws cli
+      shell: >
+        aws --profile devops-sandbox sts get-caller-identity
+      register: output
+      failed_when:
+      - '"Account" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,awscli,awsclitest
+
+    - name: Test golang installation
+      shell: >
+        go version
+      register: output
+      failed_when:
+      - '"go version go1.10" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,golang,golangtest
+
+    - name: Test Java installation
+      shell: >
+        java -version
+      register: output
+      failed_when:
+      - '"openjdk version \"10.0.2\"" not in output.stderr'
+      ignore_errors: ignore_errors
+      tags: test,java,javatest
+
+    - name: Test docker by running hello world image
+      shell: >
+        docker run hello-world
+      register: output
+      failed_when:
+        - '"Hello from Docker!" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,docker,testdocker
+
+    - name: Test docker container network connectivity
+      shell: >
+        docker run ubuntu:16.04 apt update
+      register: output
+      failed_when:
+      - '"Reading package lists..." not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,docker,testdocker
+
+    - name: Test ssh config
+      shell: >
+        ssh -tt bastion
+      register: output
+      failed_when:
+      - '"Permission denied" not in output.stderr'
+      ignore_errors: ignore_errors
+      tags: test,sshconfig,testsshconfig
+
+    - name: Test Gradle wrapper gw alias
+      lineinfile:
+        path: /home/vagrant/.bash_aliases
+        line: "alias gw='./gradlew'"
+        state: present
+      check_mode: no
+      register: output
+      failed_when: (output | changed) or (output | failed)
+      ignore_errors: ignore_errors
+      tags: test,bashaliases,bashaliasestest
+
+    - name: Test Gradle wrapper gq alias
+      lineinfile:
+        path: /home/vagrant/.bash_aliases
+        line: "alias gq='./gradlew -q'"
+        state: present
+      check_mode: no
+      register: output
+      failed_when: (output | changed) or (output | failed)
+      ignore_errors: ignore_errors
+      tags: test,bashaliases,bashaliasestest
+
+    - name: Test golang dep
+      shell: >
+        /home/vagrant/go/bin/dep version
+      register: output
+      failed_when:
+      - '"go1.10" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,golang,golangdep
+
+    - name: Test packer
+      shell: >
+        packer version
+      register: output
+      failed_when:
+      - '"1.3.1" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,packer,packertest
+
+    - name: Test cloud nuke
+      shell: >
+        cloud-nuke -v
+      register: output
+      failed_when:
+        - '"v0.1.4" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,cloudnuke,cloudnuketest
+
+    - name: Test cloud-nuke cn alias
+      lineinfile:
+        path: /home/vagrant/.bash_aliases
+        line: "alias cn='cloud-nuke'"
+        state: present
+      check_mode: no
+      register: output
+      failed_when: (output | changed) or (output | failed)
+      ignore_errors: ignore_errors
+      tags: test,cloudnuke,cloudnuketest
+
+    - name: Test terragrunt
+      shell: >
+        terragrunt -v
+      register: output
+      failed_when:
+      - '"v0.17.1" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,terragrunt,terragrunttest
+
+    - name: Test terragrunt alias
+      lineinfile:
+        path: /home/vagrant/.bash_aliases
+        line: "alias tg='terragrunt'"
+        state: present
+      check_mode: no
+      register: output
+      failed_when: (output | changed) or (output | failed)
+      ignore_errors: ignore_errors
+      tags: test,terragrunt,terragrunttest
+
+    - name: Test vagrant
+      shell: >
+        vagrant version
+      register: output
+      failed_when:
+      - '"2.2.0" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,vagrant,vagranttest
+
+    - name: Test goss
+      shell: >
+        goss --version
+      register: output
+      failed_when:
+      - '"v0.3.6" not in output.stdout'
+      ignore_errors: ignore_errors
+      tags: test,goss,gosstest

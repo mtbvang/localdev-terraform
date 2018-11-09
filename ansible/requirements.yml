@@ -1,0 +1,22 @@
+---
+- src: https://github.com/mtbvang/ansible-role-terraform
+  name: terraform
+  version: 'v0.1.0'
+- src: https://github.com/mtbvang/ansible-role-awscli
+  name: awscli
+  version: 'v1.0.0'
+- src: https://github.com/gantsign/ansible-role-golang
+  name: golang
+  version: '2.0.0'
+- src: https://github.com/mtbvang/ansible-role-java
+  name: java
+  version: '1.9.2'
+- src: https://github.com/mongrelion/ansible-role-docker
+  name: docker
+  version: '0.2.1'
+- src: https://github.com/geerlingguy/ansible-role-packer
+  name: packer
+  version: '1.0.1'
+- src: https://github.com/jdauphant/ansible-role-vagrant
+  name: vagrant
+  version: 'v1.1'

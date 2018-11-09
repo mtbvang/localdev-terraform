@@ -1,0 +1,10 @@
+/.project
+/.gradle/
+/build/
+/.vagrant
+/.settings
+/ansible/roles
+/ansible/playbook.retry
+/.idea/
+/*.log
+/**/*.retry
